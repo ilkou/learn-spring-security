@@ -1,6 +1,7 @@
 package io.github.ilkou.learnspringsecurity.web.rest;
 
 import io.github.ilkou.learnspringsecurity.domain.Customer;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,10 @@ public class CustomerController {
             new Customer(2, "Designer Achraf")
     );
 
+    // hasRole('ROLE_')  hasAnyRole('ROLE_')  hasAuthority(permission)  hasAnyAuthority(permission)
+
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMINTRAINEE')")
     public Customer getCustomerById(@PathVariable("id") Integer id) {
         return CUSTOMERS.stream().filter(customer -> customer.getId().equals(id))
                 .findFirst()
