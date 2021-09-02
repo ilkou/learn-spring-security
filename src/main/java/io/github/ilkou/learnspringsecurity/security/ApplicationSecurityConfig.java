@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 import static io.github.ilkou.learnspringsecurity.security.ApplicationUserRole.*;
 
@@ -36,7 +39,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 // or simply:
 //                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 // * Disabling csrf
-                 .csrf().disable()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/index.html", "/css/*", "/js/*").permitAll()
 //                .antMatchers("/api/v1/customers/*").hasAnyRole(ADMIN.name(), ADMINTRAINEE.name())
@@ -48,7 +51,30 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic();
+                // * form based auth: SESSION ID that expires after 30mins of inactivity by default
+                .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+                    .defaultSuccessUrl("/products", true)
+                    .passwordParameter("password")
+                    .usernameParameter("username")
+                .and()
+                .rememberMe() // default is 2 weeks
+                    .tokenValiditySeconds(((int) TimeUnit.DAYS.toSeconds(21)))
+                    .key("FNYdeHDScgYdvTdSgVWrCwWE") // something very secure :3
+                    .rememberMeParameter("remember-me")
+                .and()
+                .logout()
+                    .logoutUrl("/logout")
+                // https://docs.spring.io/spring-security/site/docs/3.2.8.RELEASE/apidocs/org/springframework/security/config/annotation/web/configurers/LogoutConfigurer.html#logoutUrl
+                // if CSRF is enabled then:
+//                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID", "remember-me")
+                    .logoutSuccessUrl("/login");
+                // * Basic Auth
+//                .httpBasic();
     }
 
     @Override
