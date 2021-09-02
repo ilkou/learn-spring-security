@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/customers")
-public class CustomerController {
+public class CustomerRessource {
 
     private static final List<Customer> CUSTOMERS = Arrays.asList(
             new Customer(1, "Ilkou Oussama"),

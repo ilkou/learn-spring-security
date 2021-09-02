@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/products")
-public class ProductController {
+public class ProductRessource {
 
     private static final List<Product> PRODUCTS = Arrays.asList(
             new Product(1, "Ilkou Oussama", 130.5f),
