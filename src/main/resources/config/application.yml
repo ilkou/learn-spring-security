@@ -1,0 +1,5 @@
+application:
+  jwt:
+    secretKey: bvTdfFSDcGyDfFFbtrHiPUgeFgfHGCVFqddgjjwdfFhYJtYjwqdvgbyuuiiOiUOfASCasXcFGgHef
+    tokenPrefix: 'Bearer '
+    tokenExpirationAfterDays: 10
